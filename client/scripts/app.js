@@ -1,5 +1,6 @@
 // YOUR CODE HERE:
 //https://api.parse.com/1/classes/chatterbox
+var app = {}; //to trick out the test
 
 var getMessages = function(){
   var messages = $.ajax({
@@ -20,16 +21,35 @@ var getMessages = function(){
   //return messages.responseJSON.results; //WHY YOU NO WORK. 
 }
 
+getMessages();
+setInterval(getMessages, 5000);
+
 var updateMessages = function(chats){
   var $messageDisplay = $(".message-display"); 
   for(var i = 0; i < chats.length; i++){
-
     $messageDiv = $('<div></div>'); 
-    $messageDiv.addClass(chats[i].username);
-    $messageDiv.html('message: '+chats[i].text);
+    $messageDiv.addClass(escapeCheck(chats[i].username));
+    $messageDiv.html(escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text));
     $messageDisplay.append($messageDiv);
   }
 }
+
+var sendMessage = function(){
+  var $message = $('textarea').text();
+  $.ajax({
+    url: 'https://api.parse.com/1/classes/chatterbox', 
+    type: 'POST', 
+    data: JSON.stringify($message), 
+    success: function(data){
+      console.log('chatterbox: Message sent');
+    }, 
+    error: function (data){
+      console.error('chatterbox: Failed to send message');
+    } 
+  });
+}
+
+
 
 var escapeCheck = function(text){
   var newName ="";
