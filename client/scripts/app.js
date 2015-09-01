@@ -2,15 +2,13 @@
 //https://api.parse.com/1/classes/chatterbox
 var app = {
   url: "https://api.parse.com/1/classes/chatterbox", 
-  users: {},
-  rooms: {}
+  users: {}, //this contains the friends?  
+  rooms: {} //"roomname" should be key? 
 };
 
 app.init = function(){
   this.getMessages(); 
 }
-
-
 
 app.getMessages = function(){
   $.ajax({
@@ -39,7 +37,7 @@ app.updateMessages = function(chats){
 
 app.sendMessage = function(){
   var $message = {
-    "username": $('#username').val(), 
+    "username": window.location.search.split("?username=")[1], //see config.js
     "text": $('#chat-message').val(), 
     "roomname": $('.roomname').val()
   };
@@ -53,6 +51,8 @@ app.sendMessage = function(){
     data: JSON.stringify($message), 
     success: function(data){
       console.log('chatterbox: Message sent', data);
+      app.getMessages(); 
+      $('#chat-message').val("");
     }, 
     error: function (data){
       console.error('chatterbox: Failed to send message');
@@ -96,4 +96,4 @@ var escapeCheck = function(text){
 }
 
 app.init(); 
-setInterval(app.getMessages.bind(app), 1000);
+setInterval(app.getMessages.bind(app), 5000);
