@@ -2,7 +2,7 @@ body {
     background: #eee;
     text-align: center;
     padding: 0 25px;
-    font-family: arial, sans-serif;
+    font-family: helvetica, sans-serif;
 }
 
 #main, #chats {
@@ -84,9 +84,14 @@ form input[type=text] {
     padding: 2px;
 }
 
-input {
-    border: 1px solid black;
+input, #roomChoice {
+    border: 1px solid lightgrey;
     border-radius: 5px;
+    margin: 5px;
+    width: 300px;
+    height: 25px;
+    font-size: 14px;
+    padding: 5px;
 }
 
 .message{
@@ -98,4 +103,5 @@ input {
 .message-display {
     height: 500px;
     overflow-y: auto;
+    margin-top: 10px;
 }
