@@ -63,6 +63,7 @@ form input[type=text] {
     padding: 5px;
     margin-bottom: 5px;
     background-color: #eee;
+    height: auto;
 }
 
 .chat .username {
@@ -80,5 +81,21 @@ form input[type=text] {
 }
 
 .spinner img {
-    padding: 10px;
+    padding: 2px;
+}
+
+input {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.message{
+    margin-top: 10px;
+    border: 1px solid gray;
+
+}
+
+.message-display {
+    height: 500px;
+    overflow-y: auto;
 }

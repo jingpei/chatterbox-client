@@ -1,47 +1,58 @@
 // YOUR CODE HERE:
 //https://api.parse.com/1/classes/chatterbox
-var app = {}; //to trick out the test
+var app = {
+  url: "https://api.parse.com/1/classes/chatterbox", 
+  users: {},
+  rooms: {}
+};
 
-var getMessages = function(){
-  var messages = $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox', 
+app.init = function(){
+  this.getMessages(); 
+}
+
+
+
+app.getMessages = function(){
+  $.ajax({
+    url: app.url, 
     type: 'GET', 
     contentType: 'application/json', 
     success: function(data, textStatus, jqXHR){
       //data is an array of objects that contain all message data (users, time, message, etc.)
-      messages = data.results;
       return data.results; 
     } 
   }).done(function(data){
-    updateMessages(data.results);
+    app.updateMessages(data.results);
     return data.results;
-  });
-  //messages = Object.create(messages)
-  // return messages;
-  //return messages.responseJSON.results; //WHY YOU NO WORK. 
+  }); 
 }
 
-getMessages();
-setInterval(getMessages, 5000);
-
-var updateMessages = function(chats){
+app.updateMessages = function(chats){
   var $messageDisplay = $(".message-display"); 
   for(var i = 0; i < chats.length; i++){
     $messageDiv = $('<div></div>'); 
-    $messageDiv.addClass(escapeCheck(chats[i].username));
-    $messageDiv.html(escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text));
+    $messageDiv.addClass(escapeCheck(chats[i].username + " chat"));
+    $messageDiv.html(escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text) + "  " + "<p>"+chats[i].createdAt+"</p>");
     $messageDisplay.append($messageDiv);
   }
 }
 
-var sendMessage = function(){
-  var $message = $('textarea').text();
+app.sendMessage = function(){
+  var $message = {
+    "username": $('#username').val(), 
+    "text": $('#chat-message').val(), 
+    "roomname": $('.roomname').val()
+  };
+
+  console.log($message);
+  console.log(JSON.stringify($message));
+
   $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox', 
+    url: app.url, 
     type: 'POST', 
     data: JSON.stringify($message), 
     success: function(data){
-      console.log('chatterbox: Message sent');
+      console.log('chatterbox: Message sent', data);
     }, 
     error: function (data){
       console.error('chatterbox: Failed to send message');
@@ -53,6 +64,9 @@ var sendMessage = function(){
 
 var escapeCheck = function(text){
   var newName ="";
+  if(text == undefined){
+    return "noName";
+  }
   for(var j = 0; j < text.length; j++){
     if(text[j] === "<" ||
       text[j] === ">" ||
@@ -80,3 +94,6 @@ var escapeCheck = function(text){
   }
   return newName;
 }
+
+app.init(); 
+setInterval(app.getMessages.bind(app), 1000);

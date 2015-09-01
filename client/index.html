@@ -15,13 +15,13 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
-      <div class="user">
-        <input placeholder='name'></input>
-      </div>
-
-      <div class="message-send">
-      <textarea name="chat" placeholder='write something NICE' rows="5" cols="50"> </textarea>
-      <button class="submit">Submit</button>
+   
+      <div class="message-send">   
+        <form>  
+          <input type='text' placeholder='name' id="username"></input>
+          <input type='text' placholder="chat me!" id="chat-message"></input>
+          <button class="submit" onclick="app.sendMessage()">Submit</button>
+        </form>
       </div>
 
 
