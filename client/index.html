@@ -16,9 +16,10 @@
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
       <div class="rooms">
-        <select id="roomChoice">
-        <option>New Room ...</option>
+        <select id="roomChoice" onchange="app.setRoom(app.data)">
+        <option>Choose your room</option>
         </select>
+        <button id="make-new-room" onclick="app.makeRoom()">Make a new room</button>
       </div>
       <div class="message-send">   
 <!--           <input type='text' placeholder='name' id="username"></input> -->

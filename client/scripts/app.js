@@ -3,7 +3,8 @@
 var app = {
   url: "https://api.parse.com/1/classes/chatterbox", 
   users: {}, //this contains the friends?  
-  room: {} //"roomname" should be key? 
+  room: {}, //"roomname" should be key? 
+  data: {}
 };
 
 app.init = function(){
@@ -22,6 +23,8 @@ app.getMessages = function(){
   }).done(function(data){
     app.updateMessages(data.results);
     app.updateRooms(data.results);
+    app.setRoom(data.results);
+    app.data = data.results;
     return data.results;
   }); 
 }
@@ -48,11 +51,36 @@ app.updateRooms = function(chats){
   }
 }
 
+app.setRoom = function(chats){
+  // console.log(app.data)
+  var $roomName = $("option:selected").val(); //.val() is awesome. it gets all the things in the html tag (all the text)
+  console.log($roomName);
+  $(".chat").remove(); 
+  for(var i=0; i<chats.length; i++){
+    if(app.room[escapeCheck(chats[i].roomname)]!==undefined && app.room[escapeCheck(chats[i].roomname)]===$roomName){
+      app.updateMessages([chats[i]]);
+    }
+  }
+}
+
+app.makeRoom = function(){
+  var newRoom = prompt("What is the name of your room?"); 
+  if(!app.room[newRoom]){
+    var $roomOptions = $("#roomChoice");
+    var $roomOption = $("<option></option>");
+    $roomOption.html(escapeCheck(newRoom));
+    $roomOptions.append($roomOption);
+    app.room[escapeCheck(newRoom)] = escapeCheck(newRoom); //added this back to the app.rooms object
+  }
+}
+// $("#make-new-room").on("click"); //so, this works (maybe), but it's nicer in the index.html file. 
+
+
 app.sendMessage = function(){
   var $message = {
     "username": window.location.search.split("?username=")[1], //see config.js
     "text": $('#chat-message').val(), 
-    "roomname": $('.roomname').val()
+    "roomname": $('option:selected').val()
   };
 
   console.log($message);
@@ -72,6 +100,7 @@ app.sendMessage = function(){
     } 
   });
 }
+
 
 var escapeCheck = function(text){
   var newName ="";
@@ -107,4 +136,4 @@ var escapeCheck = function(text){
 }
 
 app.init(); 
-setInterval(app.getMessages.bind(app), 5000);
+setInterval(app.getMessages.bind(app), 3000);
