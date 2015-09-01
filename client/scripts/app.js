@@ -2,7 +2,7 @@
 //https://api.parse.com/1/classes/chatterbox
 var app = {
   url: "https://api.parse.com/1/classes/chatterbox", 
-  users: {}, //this contains the friends?  
+  friends: {}, //this contains the friends?  
   room: {}, //"roomname" should be key? 
   data: {}
 };
@@ -34,8 +34,17 @@ app.updateMessages = function(chats){
   for(var i = 0; i < chats.length; i++){
     var $messageDiv = $('<div></div>'); 
     $messageDiv.addClass(escapeCheck(chats[i].username + " chat"));
-    $messageDiv.html(escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text) + "  " + "<p>"+chats[i].createdAt+"</p>");
-    $messageDisplay.append($messageDiv);
+    var friend = escapeCheck(chats[i].username); //to circumvent closure of ".on('click)"
+    $messageDiv.on("click", function(){ 
+      app.addFriend(friend)
+      });
+    if(app.friends[escapeCheck(chats[i].username)]){
+      $messageDiv.html('<strong>' + escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text) + "  " + "<p>"+chats[i].createdAt+"</p>"+'</strong>');
+      $messageDisplay.append($messageDiv);
+    }else{
+      $messageDiv.html(escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text) + "  " + "<p>"+chats[i].createdAt+"</p>");
+      $messageDisplay.append($messageDiv);
+    }
   }
 }
 
@@ -99,6 +108,13 @@ app.sendMessage = function(){
       console.error('chatterbox: Failed to send message');
     } 
   });
+}
+
+app.addFriend = function(friendName){
+  app.friends[friendName] = friendName; 
+  //make message bold
+  //add <strong></strong> tags to message
+  // app.updateMessages();
 }
 
 
