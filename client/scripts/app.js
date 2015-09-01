@@ -3,7 +3,7 @@
 var app = {
   url: "https://api.parse.com/1/classes/chatterbox", 
   users: {}, //this contains the friends?  
-  rooms: {} //"roomname" should be key? 
+  room: {} //"roomname" should be key? 
 };
 
 app.init = function(){
@@ -21,6 +21,7 @@ app.getMessages = function(){
     } 
   }).done(function(data){
     app.updateMessages(data.results);
+    app.updateRooms(data.results);
     return data.results;
   }); 
 }
@@ -28,10 +29,22 @@ app.getMessages = function(){
 app.updateMessages = function(chats){
   var $messageDisplay = $(".message-display"); 
   for(var i = 0; i < chats.length; i++){
-    $messageDiv = $('<div></div>'); 
+    var $messageDiv = $('<div></div>'); 
     $messageDiv.addClass(escapeCheck(chats[i].username + " chat"));
     $messageDiv.html(escapeCheck(chats[i].username) + ': ' + escapeCheck(chats[i].text) + "  " + "<p>"+chats[i].createdAt+"</p>");
     $messageDisplay.append($messageDiv);
+  }
+}
+
+app.updateRooms = function(chats){
+  var $roomOptions = $("#roomChoice");
+  for(var i=0; i<chats.length; i++){
+    var $roomOption = $('<option></option>');
+    if(app.room[escapeCheck(chats[i].roomname)]==undefined){
+      $roomOption.html(escapeCheck(chats[i].roomname));
+      $roomOptions.append($roomOption);
+      app.room[escapeCheck(chats[i].roomname)] = escapeCheck(chats[i].roomname);
+    }
   }
 }
 
@@ -59,8 +72,6 @@ app.sendMessage = function(){
     } 
   });
 }
-
-
 
 var escapeCheck = function(text){
   var newName ="";
